@@ -133,19 +133,19 @@ function getRandomColor(): CardColorType {
   return (colors[randomIndex] || 'green') as CardColorType;
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const dbNotes: Note[] = [];
-  const defaultNotes = [
+  const defaultNotes: Note[] = [
       { id: '1', text: 'This is how a Note on Note.me looks like! Very simple, clean and asthetic! 😍', date: new Date().toISOString(), color: getRandomColor() },
       { id: '2', text: 'This is how a Note on Note.me looks like! Very simple, clean and asthetic! 😍', date: new Date().toISOString(), color: getRandomColor() },
       { id: '3', text: 'This is how a Note on Note.me looks like! Very simple, clean and asthetic! 😍', date: new Date().toISOString(), color: getRandomColor() },
   ]
 
+  const notes: Note[] = dbNotes.length === 0 ? defaultNotes : dbNotes;
+
   return {
     props: {
-      notes: [
-        dbNotes.length === 0 ? [...defaultNotes] : [...dbNotes]
-      ]
+      notes
     }
   }
 }
