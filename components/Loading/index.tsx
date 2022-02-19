@@ -1,7 +1,6 @@
-import dynamic from 'next/dynamic'
 import Image from "next/image";
 import { useTheme } from "../../contexts/theme";
-import { styled, theme, lightTheme } from "../../stitches.config";
+import { styled, lightTheme } from "../../stitches.config";
 import { useEffect } from 'react'
 
 function Loading(){
@@ -83,4 +82,4 @@ function Loading(){
   );
 }
 
-export default dynamic(() => Promise.resolve(Loading), { ssr: false });
+export default Loading;

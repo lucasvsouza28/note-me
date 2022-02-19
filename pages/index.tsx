@@ -23,9 +23,9 @@ const Home: NextPage = () => {
         />
 
         <Title>Keep life simple</Title>
-        <p>
+        <Paragraph>
           Store all your notes in a simple and intuitive app that helps you enjoy what is most important in life.
-        </p>
+        </Paragraph>
 
       </Section>
       <Section offwhite css={{
@@ -58,18 +58,17 @@ const Home: NextPage = () => {
           <FiLogIn
             size={24}
           />
-          Join with Google
+          Join anonymously
         </Button>
       </Section>
-
-
     </Container>
   )
 }
 
 const Container = styled('main', {
   height: '100vh',
-  display: 'flex'
+  display: 'flex',
+  color: '$gray900',
 });
 
 const Section = styled('section', {
@@ -80,12 +79,12 @@ const Section = styled('section', {
   variants: {
     white: {
       true:{
-        background: '#FFFFFF',
+        background: '$white',
       }
     },
     offwhite: {
       true: {
-        background: '#FFFDFA',
+        background: '$white_cream',
       }
     }
   }
@@ -98,6 +97,13 @@ const Title = styled('h1', {
   marginBottom: '21px',
   color: '$gray900',
 });
+
+const Paragraph = styled('p', {
+  color: '$gray300',
+  fontWeight: 'normal',
+  fontSize: '24px',
+  lineHeight: '32px',
+})
 
 const Head = styled('h1', {
 });
@@ -157,7 +163,7 @@ const Divider = styled('hr', {
   '&:after': {
     content: 'or join anonimously',
     position: 'fixed',
-    background: '$white',
+    background: '$white_cream',
 
     padding: '0 2rem',
     color: '$gray300',
