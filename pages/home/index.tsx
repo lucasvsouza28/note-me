@@ -10,7 +10,7 @@ type CardColorType = 'green' | 'purple' | 'yellow';
 type Note = {
   id: string;
   text: string;
-  date: Date;
+  date: string;
   color: CardColorType;
 };
 
