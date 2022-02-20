@@ -7,6 +7,7 @@ interface IconButtonProps extends React.HTMLAttributes<HTMLElement> {
 
 const IconButton = ({
   children,
+  ...props
 }: IconButtonProps) => {
   const Container = styled('button', {
     cursor: 'pointer',
@@ -21,7 +22,9 @@ const IconButton = ({
   });
 
   return (
-    <Container>
+    <Container
+      {...props}
+    >
       {children}
     </Container>
   );

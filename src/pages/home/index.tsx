@@ -4,6 +4,8 @@ import { FiHome, FiLogOut, FiPlus, FiSun, FiMoon } from 'react-icons/fi'
 import { styled } from '@stitches/react'
 import { lightTheme } from '../../../stitches.config'
 import { useTheme } from '../../contexts/theme'
+import IconButton from '../../components/IconButton'
+import Sidebar from '../../components/Sidebar'
 
 type CardColorType = 'green' | 'purple' | 'yellow';
 
@@ -23,68 +25,9 @@ const Home: NextPage<HomeProps> = ({
 }) => {
   const { currentTheme, toggleTheme } = useTheme();
 
-  const SideBar = styled('div', {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-
-    padding: '1rem 0',
-
-    position: 'fixed',
-    top: '0',
-    bottom: '0',
-    left: '0',
-
-    width: '112px',
-
-    background: '$bg_sidebar',
-    filter: currentTheme === lightTheme ? 'drop-shadow(0px 0px 60px rgba(0, 0, 0, 0.05))' : '',
-  });
-
-  // TODO: understand why onClick is not fired when this is created in another file
-  const IconButton = styled('button', {
-    cursor: 'pointer',
-
-    background: 'transparent',
-    border: 'none',
-    outline: 'none',
-
-    '&:active': {
-      transform: 'scale(.95)'
-    },
-  });
-
   return (
     <>
-      <SideBar>
-        <Image
-          src={`/assets/logo${currentTheme === lightTheme ? '' : '_dark'}.svg`}
-          height={48}
-          width={48}
-        />
-
-        <SidebarCenteredWrapper>
-          <IconButton>
-            <FiHome
-              size={32}
-              color={currentTheme.colors.text_primary}
-            />
-          </IconButton>
-
-          <IconButton>
-            <FiPlus
-              size={32}
-              color={currentTheme.colors.text_primary}
-            />
-          </IconButton>
-        </SidebarCenteredWrapper>
-
-        <FiLogOut
-          size={32}
-        />
-
-      </SideBar>
+      <Sidebar />
 
       <Main>
         <Header>
@@ -163,22 +106,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
   }
 }
-
-export const SidebarCenteredWrapper = styled('div', {
-  display: 'grid',
-  placeItems: 'center',
-  width: '100%',
-  gap: '28px',
-
-  '& > button:first-child': {
-    display: 'grid',
-    placeItems: 'center',
-
-    width: '100%',
-    borderLeft: '2px solid',
-    borderLeftColor: '$text_primary',
-  }
-})
 
 const Main = styled('main', {
   padding: '39px 224px',
