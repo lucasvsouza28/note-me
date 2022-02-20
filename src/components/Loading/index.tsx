@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useTheme } from "../../contexts/theme";
-import { styled, lightTheme } from "../../stitches.config";
+import { styled, lightTheme } from "../../../stitches.config";
 import { useEffect } from 'react'
 
 function Loading(){

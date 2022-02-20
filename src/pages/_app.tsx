@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import Loading from '../components/Loading';
 import { ThemeContext } from '../contexts/theme'
-import { global, styled, theme, lightTheme } from '../stitches.config'
+import { global, styled, theme, lightTheme } from '../../stitches.config'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [currentTheme, setCurrentTheme] = useState(theme);
