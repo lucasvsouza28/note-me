@@ -66,9 +66,12 @@ const Sidebar = () => {
           </IconButton>
         </SidebarCenteredWrapper>
 
-        <FiLogOut
-          size={32}
-        />
+        <IconButton>
+          <FiLogOut
+            size={32}
+            color={currentTheme.colors.text_primary}
+          />
+        </IconButton>
       </Container>
   );
 }
