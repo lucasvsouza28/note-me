@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
 import { FiHome, FiLogOut, FiPlus, FiSun, FiMoon } from 'react-icons/fi'
 import { styled } from '@stitches/react'
-import { lightTheme } from '../../stitches.config'
+import { lightTheme } from '../../../stitches.config'
 import { useTheme } from '../../contexts/theme'
 
 type CardColorType = 'green' | 'purple' | 'yellow';
@@ -40,12 +40,19 @@ const Home: NextPage<HomeProps> = ({
 
     background: '$bg_sidebar',
     filter: currentTheme === lightTheme ? 'drop-shadow(0px 0px 60px rgba(0, 0, 0, 0.05))' : '',
+  });
 
-    '& > div': {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '28px',
-    }
+  // TODO: understand why onClick is not fired when this is created in another file
+  const IconButton = styled('button', {
+    cursor: 'pointer',
+
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+
+    '&:active': {
+      transform: 'scale(.95)'
+    },
   });
 
   return (
@@ -57,14 +64,21 @@ const Home: NextPage<HomeProps> = ({
           width={48}
         />
 
-        <div>
-          <FiHome
-            size={32}
-          />
-          <FiPlus
-            size={32}
-          />
-        </div>
+        <SidebarCenteredWrapper>
+          <IconButton>
+            <FiHome
+              size={32}
+              color={currentTheme.colors.text_primary}
+            />
+          </IconButton>
+
+          <IconButton>
+            <FiPlus
+              size={32}
+              color={currentTheme.colors.text_primary}
+            />
+          </IconButton>
+        </SidebarCenteredWrapper>
 
         <FiLogOut
           size={32}
@@ -150,13 +164,21 @@ export const getServerSideProps: GetServerSideProps = async () => {
   }
 }
 
-const IconButton = styled('button', {
-  cursor: 'pointer',
+export const SidebarCenteredWrapper = styled('div', {
+  display: 'grid',
+  placeItems: 'center',
+  width: '100%',
+  gap: '28px',
 
-  background: 'transparent',
-  border: 'none',
-  outline: 'none',
-});
+  '& > button:first-child': {
+    display: 'grid',
+    placeItems: 'center',
+
+    width: '100%',
+    borderLeft: '2px solid',
+    borderLeftColor: '$text_primary',
+  }
+})
 
 const Main = styled('main', {
   padding: '39px 224px',

@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Image from 'next/image'
 import { BsGoogle } from 'react-icons/bs'
 import { FiLogIn } from 'react-icons/fi'
-import { styled } from '../stitches.config'
+import { styled } from '../../stitches.config'
 
 const Home: NextPage = () => {
   return (
