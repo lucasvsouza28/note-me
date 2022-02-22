@@ -1,11 +1,13 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
-import { FiHome, FiLogOut, FiPlus, FiSun, FiMoon } from 'react-icons/fi'
+import { FiSun, FiMoon } from 'react-icons/fi'
 import { styled } from '@stitches/react'
 import { lightTheme } from '../../../stitches.config'
 import { useTheme } from '../../contexts/theme'
+import Loading from '../../components/Loading'
 import IconButton from '../../components/IconButton'
 import Sidebar from '../../components/Sidebar'
+import { useEffect, useState } from 'react'
 
 type CardColorType = 'green' | 'purple' | 'yellow';
 
@@ -24,6 +26,24 @@ const Home: NextPage<HomeProps> = ({
   notes,
 }) => {
   const { currentTheme, toggleTheme } = useTheme();
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const i = setInterval(() => {
+      setProgress(state => {
+        if (state >= 100) clearInterval(i);
+
+        return state + (state < 100 ? 33 : 0)
+      })
+    }, 2000);
+
+    return () => {
+      clearInterval(i)
+    }
+  }, [])
+
+
+  if (progress < 100) return <Loading completed={progress} />
 
   return (
     <>

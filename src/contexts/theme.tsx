@@ -1,15 +1,9 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react'
 
 type ThemeContextType = {
   currentTheme: any;
   setCurrentTheme: (theme: any) => void;
   toggleTheme: () => void;
-
-  isLoading: boolean;
-  setIsLoading: (loading: boolean) => void;
-
-  loadingValue: number;
-  setLoadingValue: (value: number) => void;
 };
 
 export const ThemeContext = createContext({} as ThemeContextType);
