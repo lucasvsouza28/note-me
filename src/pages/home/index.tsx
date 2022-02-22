@@ -1,13 +1,13 @@
+import { useEffect, useState } from 'react'
 import type { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
 import { FiSun, FiMoon } from 'react-icons/fi'
-import { styled } from '@stitches/react'
-import { lightTheme } from '../../../stitches.config'
+import { lightTheme, styled } from '../../../stitches.config'
 import { useTheme } from '../../contexts/theme'
 import Loading from '../../components/Loading'
 import IconButton from '../../components/IconButton'
 import Sidebar from '../../components/Sidebar'
-import { useEffect, useState } from 'react'
+import ThemedContainer from '../../components/ThemedContainer'
 
 type CardColorType = 'green' | 'purple' | 'yellow';
 
@@ -31,10 +31,17 @@ const Home: NextPage<HomeProps> = ({
   useEffect(() => {
     const i = setInterval(() => {
       setProgress(state => {
-        if (state >= 100) clearInterval(i);
+        if (state >= 100) {
+          clearInterval(i);
+          //loaded.current = true;
+        }
 
         return state + (state < 100 ? 33 : 0)
       })
+
+      // if (ref){
+      //   if (ref.current < 100) ref.current += 20;
+      // }
     }, 2000);
 
     return () => {
@@ -42,64 +49,70 @@ const Home: NextPage<HomeProps> = ({
     }
   }, [])
 
-
-  if (progress < 100) return <Loading completed={progress} />
-
   return (
-    <>
-      <Sidebar />
+    <ThemedContainer>
+      { progress < 100 ? (
+        <Loading
+          completed={progress}
+        />
+      ) : (
+        <>
+        <Sidebar />
 
-      <Main>
-        <Header>
-          <InputWrapper>
-            <Image
-              src='/assets/search.svg'
-              height={32}
-              width={32}
-            />
-            <input placeholder="Search notes" />
-          </InputWrapper>
-
-          <IconButton
-            onClick={toggleTheme}
-          >
-            { currentTheme === lightTheme ? (
-              <FiMoon
-                size={24}
-                color={currentTheme.colors.text_primary}
+        <Main>
+          <Header>
+            <InputWrapper>
+              <Image
+                src='/assets/search.svg'
+                height={32}
+                width={32}
               />
-            ) : (
-              <FiSun
-                size={24}
-                color={currentTheme.colors.text_primary}
-              />
-            ) }
-          </IconButton>
-        </Header>
+              <input placeholder="Search notes" />
+            </InputWrapper>
 
-        <h1>
-          Hello, <span>Lucas</span>
-        </h1>
-
-        <h2>All your notes are here, in one place!</h2>
-
-        <NotesContainer>
-          { notes.map(note => (
-            <Note
-              key={note.id}
-              color={note.color}
+            <IconButton
+              onClick={toggleTheme}
             >
-              <p>
-                {note.text}
-              </p>
-              <span>
-                {note.date}
-              </span>
-            </Note>
-          )) }
-        </NotesContainer>
-      </Main>
-    </>
+              { currentTheme === lightTheme ? (
+                <FiMoon
+                  size={24}
+                  color={currentTheme.colors.text_primary}
+                />
+              ) : (
+                <FiSun
+                  size={24}
+                  color={currentTheme.colors.text_primary}
+                />
+              ) }
+            </IconButton>
+          </Header>
+
+          <h1>
+            Hello, <span>Lucas</span>
+          </h1>
+
+          <h2>All your notes are here, in one place!</h2>
+
+          <NotesContainer>
+            { notes.map(note => (
+              <Note
+                key={note.id}
+                color={note.color}
+              >
+                <p>
+                  {note.text}
+                </p>
+                <span>
+                  {note.date}
+                </span>
+              </Note>
+            )) }
+          </NotesContainer>
+        </Main>
+        </>
+      ) }
+
+    </ThemedContainer>
   )
 }
 
