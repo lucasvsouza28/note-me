@@ -21,6 +21,7 @@ export default function ThemedContainer({
 }
 
 const Container = styled('div', {
+  minHeight: '100vh',
   color: '$text_primary',
   background: '$bg_color',
 })

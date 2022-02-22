@@ -8,14 +8,13 @@ import Loading from '../../components/Loading'
 import IconButton from '../../components/IconButton'
 import Sidebar from '../../components/Sidebar'
 import ThemedContainer from '../../components/ThemedContainer'
-
-type CardColorType = 'green' | 'purple' | 'yellow';
+import Note, { NoteColorType } from '../../components/Note'
 
 type Note = {
   id: string;
   text: string;
   date: string;
-  color: CardColorType;
+  color: NoteColorType;
 };
 
 type HomeProps = {
@@ -97,16 +96,11 @@ const Home: NextPage<HomeProps> = ({
             { notes.map(note => (
               <Note
                 key={note.id}
+                text={note.text}
+                date={note.date}
                 color={note.color}
-              >
-                <p>
-                  {note.text}
-                </p>
-                <span>
-                  {note.date}
-                </span>
-              </Note>
-            )) }
+              />
+            ))}
           </NotesContainer>
         </Main>
         </>
@@ -116,11 +110,11 @@ const Home: NextPage<HomeProps> = ({
   )
 }
 
-function getRandomColor(): CardColorType {
+function getRandomColor(): NoteColorType {
   const colors = ['green', 'purple', 'yellow']
   const randomIndex = parseInt((Math.random() * colors.length).toString());
 
-  return (colors[randomIndex] || 'green') as CardColorType;
+  return (colors[randomIndex] || 'green') as NoteColorType;
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -187,42 +181,5 @@ const NotesContainer = styled('div', {
   gap: '36px',
   marginTop: '63px',
 });
-
-const Note = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-
-  width: '262px',
-  height: '240px',
-  borderRadius: '10px',
-  padding: '24px',
-
-  fontWeight: '500',
-
-  '& > p' :{
-    fontSize: '20px',
-    lineHeight: '30px',
-  },
-
-  '& > span' :{
-    fontSize: '14px',
-    lineHeight: '17px',
-  },
-
-  variants: {
-    color: {
-      green: {
-        background: 'rgba(151, 210, 188, 0.4)'
-      },
-      yellow: {
-        background: 'rgba(251, 235, 149, 0.4)'
-      },
-      purple: {
-        background: 'rgba(182, 165, 203, 0.4)'
-      },
-    }
-  }
-})
 
 export default Home
