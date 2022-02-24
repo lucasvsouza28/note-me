@@ -1,10 +1,20 @@
 import type { NextPage } from 'next'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { BsGoogle } from 'react-icons/bs'
 import { FiLogIn } from 'react-icons/fi'
 import { styled } from '../../stitches.config'
+import { signIn } from '../services/auth'
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
+  const handleSignIn = async () => {
+    const loginSucceeded = await signIn();
+
+    if (loginSucceeded) router.push('/');
+  }
+
   return (
     <Container>
       <Head>
@@ -41,7 +51,9 @@ const Home: NextPage = () => {
           />
         </Head>
 
-        <Button red>
+        <Button red
+          onClick={handleSignIn}
+        >
           <BsGoogle
             size={24}
           />
