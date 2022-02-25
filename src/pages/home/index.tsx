@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
+import nookies from 'nookies'
+import firebase from 'firebase/compat/app'
 import { FiSun, FiMoon } from 'react-icons/fi'
 import { lightTheme, styled } from '../../../stitches.config'
 import { useTheme } from '../../contexts/theme'
@@ -9,8 +11,6 @@ import IconButton from '../../components/IconButton'
 import Sidebar from '../../components/Sidebar'
 import ThemedContainer from '../../components/ThemedContainer'
 import Note, { NoteColorType } from '../../components/Note'
-import nookies from 'nookies'
-import * as admin from 'firebase-admin'
 import { firebaseAdmin } from '../../services/admin'
 import { useAuth } from '../../contexts/auth'
 
@@ -119,10 +119,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = nookies.get(context);
   const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
 
-  // the user is authenticated!
-  const { uid, email } = token;
 
-  const dbNotes: Note[] = [];
+  const ref = await firebaseAdmin.firestore().collection('notes').where('author', '==', token.uid).get()
+  const dbNotes = ref.docs.map(doc => {
+    const data = doc.data() as Note;
+
+    return {
+      id: doc.id,
+      // @ts-ignore
+      date: new Date(data.date.seconds * 1000).toISOString(),
+      text: data.text,
+      color: getRandomColor()
+    } as Note
+  });
+
   const defaultNotes: Note[] = [
       { id: '1', text: 'This is how a Note on Note.me looks like! Very simple, clean and asthetic! 😍', date: new Date().toISOString(), color: getRandomColor() },
       { id: '2', text: 'So nice! ☺', date: new Date().toISOString(), color: getRandomColor() },

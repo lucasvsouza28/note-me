@@ -1,11 +1,31 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { FiHome, FiLogOut, FiPlus } from "react-icons/fi";
 import { lightTheme, styled } from "../../../stitches.config";
+import { useAuth } from '../../contexts/auth';
 import { useTheme } from '../../contexts/theme';
 import IconButton from "../IconButton";
 
+const SidebarCenteredWrapper = styled('div', {
+  display: 'grid',
+  placeItems: 'center',
+  width: '100%',
+  gap: '28px',
+
+  '& > button:first-child': {
+    display: 'grid',
+    placeItems: 'center',
+
+    width: '100%',
+    borderLeft: '2px solid',
+    borderLeftColor: '$text_primary',
+  }
+});
+
 const Sidebar = () => {
   const { currentTheme } = useTheme();
+  const { signout } = useAuth();
+  const router = useRouter();
 
   const Container = styled('div', {
     display: 'flex',
@@ -26,21 +46,10 @@ const Sidebar = () => {
     filter: currentTheme === lightTheme ? 'drop-shadow(0px 0px 60px rgba(0, 0, 0, 0.05))' : '',
   });
 
-  const SidebarCenteredWrapper = styled('div', {
-    display: 'grid',
-    placeItems: 'center',
-    width: '100%',
-    gap: '28px',
-
-    '& > button:first-child': {
-      display: 'grid',
-      placeItems: 'center',
-
-      width: '100%',
-      borderLeft: '2px solid',
-      borderLeftColor: '$text_primary',
-    }
-  });
+  const handleSignout = async () => {
+    await signout();
+    router.push('/');
+  }
 
   return (
     <Container>
@@ -66,7 +75,9 @@ const Sidebar = () => {
           </IconButton>
         </SidebarCenteredWrapper>
 
-        <IconButton>
+        <IconButton
+          onClick={handleSignout}
+        >
           <FiLogOut
             size={32}
             color={currentTheme.colors.text_primary}

@@ -7,6 +7,7 @@ import nookies from 'nookies';
 type AuthContextType = {
   user: firebaseClient.User | null,
   signin: () => void;
+  signout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -44,11 +45,18 @@ export const AuthProvider: React.FC = ({ children }) => {
     setUser(user);
   }
 
+  const signout = async () => {
+    await firebaseClient.auth().signOut();
+
+    setUser(null);
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user,
-        signin
+        signin,
+        signout
       }}
     >
       {children}
