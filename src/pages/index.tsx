@@ -4,15 +4,16 @@ import { useRouter } from 'next/router'
 import { BsGoogle } from 'react-icons/bs'
 import { FiLogIn } from 'react-icons/fi'
 import { styled } from '../../stitches.config'
-import { signIn } from '../services/auth'
+import { useAuth } from '../contexts/auth'
 
 const Home: NextPage = () => {
   const router = useRouter();
+  const { signin } = useAuth()
 
   const handleSignIn = async () => {
-    const loginSucceeded = await signIn();
+    await signin()
 
-    if (loginSucceeded) router.push('/');
+    router.push('/home')
   }
 
   return (

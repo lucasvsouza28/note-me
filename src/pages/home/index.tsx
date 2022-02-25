@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
-import { getAuth } from 'firebase/auth'
-import Cookies from 'cookies'
 import { FiSun, FiMoon } from 'react-icons/fi'
 import { lightTheme, styled } from '../../../stitches.config'
 import { useTheme } from '../../contexts/theme'
@@ -11,7 +9,10 @@ import IconButton from '../../components/IconButton'
 import Sidebar from '../../components/Sidebar'
 import ThemedContainer from '../../components/ThemedContainer'
 import Note, { NoteColorType } from '../../components/Note'
-import AuthService from '../../services/auth'
+import nookies from 'nookies'
+import * as admin from 'firebase-admin'
+import { firebaseAdmin } from '../../services/admin'
+import { useAuth } from '../../contexts/auth'
 
 type Note = {
   id: string;
@@ -28,6 +29,7 @@ const Home: NextPage<HomeProps> = ({
   notes,
 }) => {
   const { currentTheme, toggleTheme } = useTheme();
+  const { user, } = useAuth()
   const [progress, setProgress] = useState(100);
 
   // useEffect(() => {
@@ -83,7 +85,7 @@ const Home: NextPage<HomeProps> = ({
           </Header>
 
           <h1>
-            Hello, <span>Lucas</span>
+            Hello, <span>{ user?.displayName }</span>
           </h1>
 
           <h2>All your notes are here, in one place!</h2>
@@ -114,17 +116,11 @@ function getRandomColor(): NoteColorType {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cookies = new Cookies(context.req, context.res);
-  const sessionCookie = cookies.get('session');
+  const cookies = nookies.get(context);
+  const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
 
-  // @ts-ignore
-  const claims = await getAuth().verifySessionCookie(sessionCookie, true /** checkRevoked */);
-  console.log('claims', claims)
-
-  // const { user } = await AuthService.auth.signInWithCustomToken(session!);
-
-  // const tst = AuthService.collection(AuthService.db, 'notes').where("author", "==", user!.uid).get()
-  // console.log('tst', tst)
+  // the user is authenticated!
+  const { uid, email } = token;
 
   const dbNotes: Note[] = [];
   const defaultNotes: Note[] = [
