@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { ThemeProvider } from '../contexts/theme'
 import { global, styled } from '../../stitches.config'
 import { AuthProvider } from '../contexts/auth'
+import { NotesProvider } from '../contexts/notes'
 
 const Container = styled('div', {
   minHeight: '100vh',
@@ -19,11 +20,13 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <ThemeProvider>
         <AuthProvider>
-          <Container
-            className={'AppContainer'}
-          >
-            <Component {...pageProps} />
-          </Container>
+          <NotesProvider>
+            <Container
+              className={'AppContainer'}
+            >
+              <Component {...pageProps} />
+            </Container>
+          </NotesProvider>
         </AuthProvider>
       </ThemeProvider>
     </>

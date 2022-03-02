@@ -13,6 +13,7 @@ import ThemedContainer from '../../components/ThemedContainer'
 import Note, { NoteColorType } from '../../components/Note'
 import { firebaseAdmin } from '../../services/admin'
 import { useAuth } from '../../contexts/auth'
+import { useNotes } from '../../contexts/notes'
 
 type Note = {
   id: string;
@@ -29,6 +30,7 @@ const Home: NextPage<HomeProps> = ({
   notes,
 }) => {
   const { currentTheme, toggleTheme } = useTheme();
+  const { newNote, createNote, } = useNotes();
   const { user, } = useAuth()
   const [progress, setProgress] = useState(100);
 
@@ -63,6 +65,7 @@ const Home: NextPage<HomeProps> = ({
                 src='/assets/search.svg'
                 height={32}
                 width={32}
+                alt="search icon"
               />
               <input placeholder="Search notes" />
             </InputWrapper>
@@ -91,6 +94,14 @@ const Home: NextPage<HomeProps> = ({
           <h2>All your notes are here, in one place!</h2>
 
           <NotesContainer>
+            { newNote && (
+              <Note
+                editable={true}
+                color={getRandomColor()}
+                onNoteSent={n => createNote({ text: n.text!, author: user?.uid! })}
+              />
+            )}
+
             { notes.map(note => (
               <Note
                 key={note.id}

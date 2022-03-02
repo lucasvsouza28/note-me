@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { FiHome, FiLogOut, FiPlus } from "react-icons/fi";
 import { lightTheme, styled } from "../../../stitches.config";
 import { useAuth } from '../../contexts/auth';
+import { useNotes } from '../../contexts/notes';
 import { useTheme } from '../../contexts/theme';
 import IconButton from "../IconButton";
 
@@ -24,7 +25,8 @@ const SidebarCenteredWrapper = styled('div', {
 
 const Sidebar = () => {
   const { currentTheme } = useTheme();
-  const { signout } = useAuth();
+  const { setNewNote, } = useNotes();
+  const { signout, user } = useAuth();
   const router = useRouter();
 
   const Container = styled('div', {
@@ -51,12 +53,14 @@ const Sidebar = () => {
     router.push('/');
   }
 
+
   return (
     <Container>
         <Image
           src={`/assets/logo${currentTheme === lightTheme ? '' : '_dark'}.svg`}
           height={48}
           width={48}
+          alt="note.me logo"
         />
 
         <SidebarCenteredWrapper>
@@ -67,7 +71,11 @@ const Sidebar = () => {
             />
           </IconButton>
 
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              setNewNote({ author: user?.uid!, text: '' })
+            }}
+          >
             <FiPlus
               size={32}
               color={currentTheme.colors.text_primary}
