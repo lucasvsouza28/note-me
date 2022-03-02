@@ -7,7 +7,6 @@ if (!firebaseAdmin.apps.length) {
       clientEmail: process.env.PVK_client_email,
       projectId: process.env.PVK_project_id,
     }),
-    databaseURL: 'https://note-me-e70ba.firebaseio.com',
   });
 }
 
