@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image'
+import nookies from 'nookies'
+import firebase from 'firebase/compat/app'
 import { FiSun, FiMoon } from 'react-icons/fi'
 import { lightTheme, styled } from '../../../stitches.config'
 import { useTheme } from '../../contexts/theme'
@@ -9,6 +11,8 @@ import IconButton from '../../components/IconButton'
 import Sidebar from '../../components/Sidebar'
 import ThemedContainer from '../../components/ThemedContainer'
 import Note, { NoteColorType } from '../../components/Note'
+import { firebaseAdmin } from '../../services/admin'
+import { useAuth } from '../../contexts/auth'
 
 type Note = {
   id: string;
@@ -25,28 +29,22 @@ const Home: NextPage<HomeProps> = ({
   notes,
 }) => {
   const { currentTheme, toggleTheme } = useTheme();
-  const [progress, setProgress] = useState(0);
+  const { user, } = useAuth()
+  const [progress, setProgress] = useState(100);
 
-  useEffect(() => {
-    const i = setInterval(() => {
-      setProgress(state => {
-        if (state >= 100) {
-          clearInterval(i);
-          //loaded.current = true;
-        }
+  // useEffect(() => {
+  //   const i = setInterval(() => {
+  //     setProgress(state => {
+  //       if (state >= 100) clearInterval(i);
 
-        return state + (state < 100 ? 33 : 0)
-      })
+  //       return state + (state < 100 ? 33 : 0)
+  //     })
+  //   }, 2000);
 
-      // if (ref){
-      //   if (ref.current < 100) ref.current += 20;
-      // }
-    }, 2000);
-
-    return () => {
-      clearInterval(i)
-    }
-  }, [])
+  //   return () => {
+  //     clearInterval(i)
+  //   }
+  // }, [])
 
   return (
     <ThemedContainer>
@@ -87,7 +85,7 @@ const Home: NextPage<HomeProps> = ({
           </Header>
 
           <h1>
-            Hello, <span>Lucas</span>
+            Hello, <span>{ user?.displayName }</span>
           </h1>
 
           <h2>All your notes are here, in one place!</h2>
@@ -117,11 +115,27 @@ function getRandomColor(): NoteColorType {
   return (colors[randomIndex] || 'green') as NoteColorType;
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const dbNotes: Note[] = [];
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookies = nookies.get(context);
+  const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
+
+
+  const ref = await firebaseAdmin.firestore().collection('notes').where('author', '==', token.uid).get()
+  const dbNotes = ref.docs.map(doc => {
+    const data = doc.data() as Note;
+
+    return {
+      id: doc.id,
+      // @ts-ignore
+      date: new Date(data.date.seconds * 1000).toISOString(),
+      text: data.text,
+      color: getRandomColor()
+    } as Note
+  });
+
   const defaultNotes: Note[] = [
       { id: '1', text: 'This is how a Note on Note.me looks like! Very simple, clean and asthetic! 😍', date: new Date().toISOString(), color: getRandomColor() },
-      { id: '2', text: 'This is how a Note on Note.me looks like! Very simple, clean and asthetic! 😍', date: new Date().toISOString(), color: getRandomColor() },
+      { id: '2', text: 'So nice! ☺', date: new Date().toISOString(), color: getRandomColor() },
       { id: '3', text: 'This is how a Note on Note.me looks like! Very simple, clean and asthetic! 😍', date: new Date().toISOString(), color: getRandomColor() },
   ]
 
