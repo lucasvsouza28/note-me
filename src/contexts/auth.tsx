@@ -28,16 +28,17 @@ export const AuthProvider: React.FC = ({ children }) => {
     });
   }, []);
 
+  const TEN_MINUTES_MILISECONDS = 10 * 60 * 1000;
 
   useEffect(() => {
     const handle = setInterval(async () => {
       const user = firebaseClient.auth().currentUser;
       if (user) await user.getIdToken(true);
-    }, 10 * 60 * 1000);
+    }, TEN_MINUTES_MILISECONDS);
 
     // clean up setInterval
     return () => clearInterval(handle);
-  }, []);
+  });
 
   const signin = async () => {
     const { user } = await firebaseClient.auth().signInWithPopup(new GoogleAuthProvider());
