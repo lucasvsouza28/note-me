@@ -1,17 +1,14 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { styled } from "../../../stitches.config"
+import { useNotes } from "../../contexts/notes";
 
 export type NoteColorType = 'green' | 'purple' | 'yellow';
 
-type NoteType = {
+type NoteProps = {
   text?: string;
   date?: string;
-}
-
-type NoteProps = NoteType & {
   editable?: boolean;
   color: NoteColorType;
-  onNoteSent?: (newNote: NoteType) => void;
 };
 
 const Note = ({
@@ -19,10 +16,10 @@ const Note = ({
   date,
   color,
   editable,
-  onNoteSent,
   ...props
 }: NoteProps) => {
   const [newNoteText, setNewNoteText] = useState('');
+  const { createNote, } = useNotes()
 
   const formatDate = (date: Date) => {
     let monthName = Intl.DateTimeFormat(Intl.Locale.name, { month: 'short' }).format(date)
@@ -34,6 +31,11 @@ const Note = ({
     return `${monthName}, ${date.getDay().toString().padStart(2, '0')} ${date.getFullYear()}`;
   }
 
+  const handleSubmit = () => {
+    setNewNoteText('');
+    createNote({ text: newNoteText });
+  }
+
   return (
     <Container
       color={color}
@@ -43,14 +45,15 @@ const Note = ({
         <form
           onSubmit={(e: FormEvent) => {
             e.preventDefault();
-            setNewNoteText('');
-
-            if (onNoteSent) onNoteSent({text: newNoteText, date: new Date().toISOString()});
+            handleSubmit();
           }}
         >
           <textarea
             placeholder="Type your note..."
             onChange={e => setNewNoteText(e.target.value)}
+            onKeyPress={e => {
+              if (e.ctrlKey && e.key === '\n') handleSubmit();
+            }}
           />
         </form>
       )}

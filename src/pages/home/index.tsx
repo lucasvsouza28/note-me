@@ -30,7 +30,7 @@ const Home: NextPage<HomeProps> = ({
   notes,
 }) => {
   const { currentTheme, toggleTheme } = useTheme();
-  const { newNote, createNote, } = useNotes();
+  const { newNote, } = useNotes();
   const { user, } = useAuth()
   const [progress, setProgress] = useState(100);
 
@@ -98,7 +98,6 @@ const Home: NextPage<HomeProps> = ({
               <Note
                 editable={true}
                 color={getRandomColor()}
-                onNoteSent={n => createNote({ text: n.text!, author: user?.uid! })}
               />
             )}
 
@@ -129,8 +128,6 @@ function getRandomColor(): NoteColorType {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const cookies = nookies.get(context);
   const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
-
-
   const ref = await firebaseAdmin.firestore().collection('notes').where('author', '==', token.uid).get()
   const dbNotes = ref.docs.map(doc => {
     const data = doc.data() as Note;
